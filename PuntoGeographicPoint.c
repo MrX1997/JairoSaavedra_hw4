@@ -14,24 +14,27 @@ void freePointer(double **matrix);
 
 int nx=744;
 int ny=500;
-int deltarandom=2;
-int Niteraciones=1000;
+double deltarandom=1.5;
+int Niteraciones=3000;
 double *x_datos;
 double *y_datos;
 int N=120877;
 double x_maximo,y_maximo,r_maximo;
+int i;
+int j;
 
 int main(void)
 {   
  // cantidad de puntos continentales 
-	 int i;
-    int j;
+
 
     double x_mod,y_mod,r_mod,x_nuevo,y_nuevo,r_nuevo,alpha;
-    double x_maximo,y_maximo,r_maximo;
+    
     double **matriz=Matriz();
     
-
+    int rangox=N/nx;
+    int rangoy=N/ny;
+    
     x_datos = malloc(N*sizeof(double));
     y_datos = malloc(N*sizeof(double));
     
@@ -40,13 +43,13 @@ int main(void)
     cargar_datos(matriz);
     coord(matriz,x_datos,y_datos);
     
-    
-
-    x_mod=(2*_randomnumero()*N/744);
-    y_mod=(2*_randomnumero()*N/500);
-    r_mod=radio(x_mod,y_mod);
-    
     FILE *punto = fopen("datos.txt", "w");
+
+    
+    
+    x_mod=(2*_randomnumero()*rangox);
+    y_mod=(2*_randomnumero()*rangoy);
+    r_mod=radio(x_mod,y_mod);
     
     for(i=0; i<Niteraciones; i++)
 	{
@@ -91,17 +94,19 @@ int main(void)
     				y_mod = y_nuevo;
     				r_mod = r_nuevo;
     			}
-        
-    }
-    fprintf(punto,"%f %f %f\n",x_mod,y_mod,r_mod);
+    
+        fprintf(punto,"%f %f %f\n",x_mod,y_mod,r_mod);
+	}
+
     fclose(punto);
     
+	// Factores de converccion 
     x_maximo=-x_maximo*2*180/nx;
     y_maximo=y_maximo*2*90/ny-90;
     r_maximo=r_maximo*20000/744;
 
 
-	printf("Las coordenadas del punto %f %f\n",y_maximo,x_maximo);
+	printf("Las coordenadas del punto: Latitud:%lf , Longitud:%f\n",y_maximo,x_maximo);
 	freePointer(matriz);
     return 0;
 }
@@ -194,7 +199,7 @@ double **Matriz(void)
     }
 
     return matriz;
-}	  
+}	
 
 void freePointer(double **matriz)
 {
@@ -205,74 +210,3 @@ void freePointer(double **matriz)
     }
     free(matriz);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*    
-// otro metodo de cargar datos 
-double retornamatriz(int filas, int columnas)
-{
-    FILE *file;
-    file=fopen("map_data.txt", "r");
-    int len=1000;
-    char lineas[len];
-    char *separar=NULL;
-    const char *delim;
-    delim=" ";
-    
-    double val;
-    int i=0;
-    int j=0;
-    double matriz[500][744];
-
- 
-
-// LEE EL ARCHIVO Y LO GUARDA EN LA MATRIZ
-  while(fgets(lineas,len,file) )
-{
-  //printf("%s\n",lineas );
-  j=0;
-  separar=strtok(lineas,delim);
-    while(separar !=NULL)
-    {
-      if(j !=0)
-      {
-      
-      //printf("el trozo es :%s\n", separar );
-        val= atof(separar);
-      //printf("en doble es: %e\n", val);
-        matriz[i][j-1]=val;
-      //printf("%e\t", val );
-      }
-      
-      separar=strtok(NULL, delim);
-      
-      if (j>=0 && j<=744)
-      {
-        j=j+1;
-      }
-      
-    }
-    //printf("\n");
-    if(i>=0 && i<=500)
-    {
-      i=i+1;
-    }
-}
-}
-*/
-	
-  
-
